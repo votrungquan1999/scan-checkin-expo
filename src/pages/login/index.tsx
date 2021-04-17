@@ -1,20 +1,29 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { google, sheets_v4 } from 'googleapis';
+// import { google, sheets_v4 } from 'googleapis';
 import React, { useCallback } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
+import { CLIEND_ID } from '../../consts/google';
+// import { CLIEND_ID } from '../../consts/sheets';
+// import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 WebBrowser.maybeCompleteAuthSession();
 
 interface LoginProps {
   setAccessToken: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setGoogleSheets: React.Dispatch<React.SetStateAction<sheets_v4.Sheets | undefined>>;
 }
 
-export default function Login({ setAccessToken, setGoogleSheets }: LoginProps) {
+export default function Login({ setAccessToken }: LoginProps) {
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: '280644384387-7ch9hlp9doqigd1460lk9q7ccav777cg.apps.googleusercontent.com',
-    webClientId: '280644384387-7ch9hlp9doqigd1460lk9q7ccav777cg.apps.googleusercontent.com',
+    expoClientId: CLIEND_ID,
+    webClientId: CLIEND_ID,
+    scopes: [
+      'https://www.googleapis.com/auth/spreadsheets.readonly',
+      'https://www.googleapis.com/auth/spreadsheets',
+      'https://www.googleapis.com/auth/drive.readonly',
+      'https://www.googleapis.com/auth/drive.file',
+      'https://www.googleapis.com/auth/drive',
+    ],
   });
 
   React.useEffect(() => {
@@ -27,25 +36,9 @@ export default function Login({ setAccessToken, setGoogleSheets }: LoginProps) {
         alert('auth failed');
         return;
       }
-
-      const sheets = AuthGoogleSheet(accessToken);
       setAccessToken(accessToken);
-      setGoogleSheets(sheets);
     }
   }, [response]);
-
-  const AuthGoogleSheet = useCallback((accessToken: string) => {
-    const oAuth2Client = new google.auth.OAuth2({
-      clientId: '280644384387-7ch9hlp9doqigd1460lk9q7ccav777cg.apps.googleusercontent.com',
-      clientSecret: 'OSkknC2v1QvbCia0ZzF3fDE-',
-    });
-
-    oAuth2Client.setCredentials({ access_token: accessToken });
-
-    const sheets = google.sheets({ version: 'v4', auth: oAuth2Client });
-
-    return sheets;
-  }, []);
 
   return (
     <>

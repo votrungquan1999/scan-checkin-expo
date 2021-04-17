@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { sheets_v4 } from 'googleapis';
+import { getSheetData } from '../../utils/getSheetsInfo';
+import processScannedValue from '../../utils/processScannedValue';
+// import { sheets_v4 } from 'googleapis';
+// import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 interface ScanningProps {
-  googleSheets: sheets_v4.Sheets;
+  accessToken: string;
 }
 
-export default function Scanning({ googleSheets }: ScanningProps) {
+export default function Scanning({ accessToken }: ScanningProps) {
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [scanned, setScanned] = useState(false);
 
@@ -21,6 +24,10 @@ export default function Scanning({ googleSheets }: ScanningProps) {
   const handleBarCodeScanned = ({ type, data }: any) => {
     setScanned(true);
     alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+    console.log(accessToken);
+
+    processScannedValue(accessToken, data);
   };
 
   if (hasPermission === null) {
