@@ -1,21 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { sheets_v4 } from 'googleapis';
+import * as React from 'react';
+import { Text } from 'react-native';
+import Login from './src/pages/login';
+import Scanning from './src/pages/scanning';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [accessToken, setAccessToken] = React.useState<string>();
+  const [googleSheets, setGoogleSheets] = React.useState<sheets_v4.Sheets>();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  if (googleSheets) {
+    return <Scanning googleSheets={googleSheets} />;
+  } else {
+    return <Login setAccessToken={setAccessToken} setGoogleSheets={setGoogleSheets} />;
+  }
+}
