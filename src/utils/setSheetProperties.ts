@@ -6,10 +6,10 @@ import { SheetInfo } from './getSheetsInfo';
 export async function setSheetProperties(sheetInfo: SheetInfo, accessToken: string) {
   const sheetProps = sheetInfo.properties;
 
-  sheetProps.gridProperties.columnCount = 1000;
+  // sheetProps.gridProperties.columnCount = 1000;
 
   try {
-    const resp = await axios.post(
+    await axios.post(
       `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
       {
         requests: [

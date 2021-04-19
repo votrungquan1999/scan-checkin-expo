@@ -1,4 +1,5 @@
 import checkIn from './checkIn';
+import getAccounts from './getAccounts';
 import { GetSheetData, getSheetData } from './getSheetsInfo';
 import { setSheetProperties } from './setSheetProperties';
 
@@ -16,14 +17,14 @@ function getSheetID(sheetData: GetSheetData, name: string) {
 
 function getSheetInfo(sheetData: GetSheetData, name: string) {
   const [sheetInfo] = sheetData.sheets.filter((data) => {
-    console.log(data.properties);
+    // console.log(data.properties);
     return data.properties.title === name;
   });
 
   return sheetInfo;
 }
 
-export default async function processScannedValue(accessToken: string, value: string) {
+export default async function processScannedValue(accessToken: string, barcode: string) {
   const sheetData = await getSheetData(accessToken);
 
   if (!sheetData) {
@@ -31,7 +32,7 @@ export default async function processScannedValue(accessToken: string, value: st
     return;
   }
 
-  const sheetID = getSheetID(sheetData, 'check-in');
+  // const sheetID = getSheetID(sheetData, 'check-in');
 
   const sheetInfo = getSheetInfo(sheetData, 'check-in');
   if (!sheetInfo) {
@@ -39,7 +40,21 @@ export default async function processScannedValue(accessToken: string, value: st
     return;
   }
 
-  await setSheetProperties(sheetInfo, accessToken);
+  const users = await getAccounts(sheetData);
 
-  await checkIn(accessToken, sheetID, value, sheetInfo);
+  if (!users) {
+    return;
+  }
+
+  // console.log(users);
+
+  const [existedUser] = users.filter((user) => user.barcode === barcode);
+  if (!existedUser) {
+    alert('user id not found');
+    return;
+  }
+
+  // await setSheetProperties(sheetInfo, accessToken);
+
+  await checkIn(accessToken, barcode, sheetInfo, existedUser);
 }

@@ -1,55 +1,117 @@
 import axios from 'axios';
 import { API_KEY } from '../consts/google';
 import { SHEET_ID } from '../consts/sheets';
+import getAccounts, { UserAccount } from './getAccounts';
+import getCurrentLocation from './getCurrentLocation';
 import { GetSheetData, SheetInfo } from './getSheetsInfo';
 
-export default async function checkIn(accessToken: string, sheetID: number, customer: string, sheetInfo: SheetInfo) {
+export default async function checkIn(
+  accessToken: string,
+  barcode: string,
+  sheetInfo: SheetInfo,
+  checkInUser: UserAccount,
+) {
   const currentDate = new Date();
-  const timestamp = currentDate.toDateString();
+  const date = currentDate.toDateString();
 
   const time = currentDate.toTimeString();
 
-  let row: number = 0,
-    column: number = 0;
-  sheetInfo.data.forEach((info) => {
-    info.rowData.forEach((rowData, index) => {
-      if (rowData.values[0].effectiveValue.stringValue === customer) {
-        row = index;
-        column = rowData.values.length;
-      }
-    });
-  });
+  const location = await getCurrentLocation();
 
-  console.log(sheetInfo, row, column);
+  // let row: number = 0;
+  // let column: number = 0;
 
-  if (row === 0) {
-    alert('can not find user name');
-    return;
-  }
+  // console.log(sheetInfo, row, column);
+
+  // if (row === 0) {
+  //   alert('can not find user name');
+  //   return;
+  // }
+
+  // const resp = await axios.post(
+  //   ` https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
+  //   {
+  //     requests: [
+  //       {
+  //         updateCells: {
+  //           rows: [
+  //             {
+  //               values: [
+  //                 {
+  //                   userEnteredValue: {
+  //                     stringValue: timestamp + ' ' + time,
+  //                   },
+  //                 },
+  //               ],
+  //             },
+  //           ],
+  //           fields: '*',
+  //           start: {
+  //             sheetId: sheetInfo.properties.sheetId,
+  //             columnIndex: column,
+  //             rowIndex: row,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     headers: {
+  //       authorization: `Bearer ${accessToken}`,
+  //     },
+  //   },
+  // );
 
   const resp = await axios.post(
     ` https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
     {
       requests: [
         {
-          updateCells: {
+          appendCells: {
             rows: [
               {
                 values: [
                   {
                     userEnteredValue: {
-                      stringValue: timestamp + ' ' + time,
+                      stringValue: barcode,
+                    },
+                  },
+                  {
+                    userEnteredValue: {
+                      stringValue: time,
+                    },
+                  },
+                  {
+                    userEnteredValue: {
+                      stringValue: date,
+                    },
+                  },
+                  {
+                    userEnteredValue: {
+                      stringValue: location?.map((location) => {
+                        let address = '';
+                        if (location.city) {
+                          address += location.city + ' ';
+                        }
+
+                        if (location.street) {
+                          address += location.street;
+                        }
+
+                        return address;
+                      })[0],
+                    },
+                  },
+                  {
+                    userEnteredValue: {
+                      stringValue: checkInUser.lastName + ' ' + checkInUser.firstName,
                     },
                   },
                 ],
               },
             ],
             fields: '*',
-            start: {
-              sheetId: sheetID,
-              columnIndex: column,
-              rowIndex: row,
-            },
+            sheetId: sheetInfo.properties.sheetId,
           },
         },
       ],
