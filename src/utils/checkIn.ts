@@ -18,50 +18,6 @@ export default async function checkIn(
 
   const location = await getCurrentLocation();
 
-  // let row: number = 0;
-  // let column: number = 0;
-
-  // console.log(sheetInfo, row, column);
-
-  // if (row === 0) {
-  //   alert('can not find user name');
-  //   return;
-  // }
-
-  // const resp = await axios.post(
-  //   ` https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
-  //   {
-  //     requests: [
-  //       {
-  //         updateCells: {
-  //           rows: [
-  //             {
-  //               values: [
-  //                 {
-  //                   userEnteredValue: {
-  //                     stringValue: timestamp + ' ' + time,
-  //                   },
-  //                 },
-  //               ],
-  //             },
-  //           ],
-  //           fields: '*',
-  //           start: {
-  //             sheetId: sheetInfo.properties.sheetId,
-  //             columnIndex: column,
-  //             rowIndex: row,
-  //           },
-  //         },
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     headers: {
-  //       authorization: `Bearer ${accessToken}`,
-  //     },
-  //   },
-  // );
-
   const resp = await axios.post(
     ` https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
     {

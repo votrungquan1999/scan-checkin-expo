@@ -25,7 +25,7 @@ export default function Scanning({ accessToken }: ScanningProps) {
     setScanned(true);
     alert(`Bar code with type ${type} and data ${data} has been scanned!`);
 
-    console.log(accessToken);
+    // console.log(accessToken);
 
     processScannedValue(accessToken, data);
   };

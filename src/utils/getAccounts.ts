@@ -20,7 +20,7 @@ export default async function getAccounts(sheetData: GetSheetData) {
     .filter((row, index) => index !== 0 && !!row.values[0].effectiveValue)
     .map((row) => {
       // console.log(row.values[0], 'row value 0-------------');
-      console.log(row.values[0], '--------');
+      // console.log(row.values[0], '--------');
       const newUser: UserAccount = {
         barcode: row.values[0] && row.values[0].formattedValue,
         lastName: row.values[1] && row.values[1].effectiveValue?.stringValue,
