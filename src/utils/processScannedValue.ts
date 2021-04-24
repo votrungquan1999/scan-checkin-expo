@@ -56,5 +56,11 @@ export default async function processScannedValue(accessToken: string, barcode: 
 
   // await setSheetProperties(sheetInfo, accessToken);
 
-  await checkIn(accessToken, barcode, sheetInfo, existedUser);
+  const respStatus = await checkIn(accessToken, barcode, sheetInfo, existedUser);
+
+  if (respStatus === 200) {
+    alert(`Check in user ${existedUser.lastName} ${existedUser.firstName} successfully`);
+  } else {
+    alert('check in user failed!!');
+  }
 }

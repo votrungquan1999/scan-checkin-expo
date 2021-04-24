@@ -78,4 +78,6 @@ export default async function checkIn(
       },
     },
   );
+
+  return resp.status;
 }

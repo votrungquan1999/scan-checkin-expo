@@ -1,11 +1,8 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-// import { google, sheets_v4 } from 'googleapis';
-import React, { useCallback } from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Text, View, StyleSheet, Image, Dimensions } from 'react-native';
 import { CLIEND_ID } from '../../consts/google';
-// import { CLIEND_ID } from '../../consts/sheets';
-// import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -20,9 +17,9 @@ export default function Login({ setAccessToken }: LoginProps) {
     scopes: [
       'https://www.googleapis.com/auth/spreadsheets.readonly',
       'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/drive.readonly',
-      'https://www.googleapis.com/auth/drive.file',
-      'https://www.googleapis.com/auth/drive',
+      // 'https://www.googleapis.com/auth/drive.readonly',
+      // 'https://www.googleapis.com/auth/drive.file',
+      // 'https://www.googleapis.com/auth/drive',
     ],
   });
 
@@ -41,16 +38,39 @@ export default function Login({ setAccessToken }: LoginProps) {
   }, [response]);
 
   return (
-    <>
+    <View style={styles.container}>
+      <Image source={require('../../../assets/logo.jpeg')} style={styles.logo} />
       <TouchableOpacity
         onPress={() => {
           promptAsync();
         }}
-        style={{ backgroundColor: 'blue', marginTop: 100 }}
+        style={styles.button}
         disabled={!request}
       >
-        <Text style={{ fontSize: 20, color: '#fff', marginTop: 100 }}>Login by Google</Text>
+        <Text style={{ fontSize: 20, color: '#fff' }}>Login by Google</Text>
       </TouchableOpacity>
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  logo: {
+    width: (Dimensions.get('window').height * 20 * 1.5) / 100,
+    height: (Dimensions.get('window').height * 20) / 100,
+    alignSelf: 'center',
+    marginTop: (Dimensions.get('window').height * 10) / 100,
+  },
+
+  button: {
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'blue',
+    position: 'absolute',
+    width: Dimensions.get('window').width,
+    top: (Dimensions.get('window').height * 50) / 100,
+  },
+});

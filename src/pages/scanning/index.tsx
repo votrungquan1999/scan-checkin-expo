@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, Button, Image, Dimensions } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { getSheetData } from '../../utils/getSheetsInfo';
 import processScannedValue from '../../utils/processScannedValue';
-// import { sheets_v4 } from 'googleapis';
-// import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 interface ScanningProps {
   accessToken: string;
@@ -23,9 +20,7 @@ export default function Scanning({ accessToken }: ScanningProps) {
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-
-    // console.log(accessToken);
+    alert(`Bar code with type ${type} and data ${data} has been scanned! Please wait for processing!`);
 
     processScannedValue(accessToken, data);
   };
@@ -39,10 +34,8 @@ export default function Scanning({ accessToken }: ScanningProps) {
 
   return (
     <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
+      <Image source={require('../../../assets/logo.jpeg')} style={styles.logo} />
+      <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} style={styles.cameraView} />
       {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
     </View>
   );
@@ -53,5 +46,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+
+  logo: {
+    width: (Dimensions.get('window').height * 10 * 1.5) / 100,
+    height: (Dimensions.get('window').height * 10) / 100,
+    alignSelf: 'center',
+    marginBottom: (Dimensions.get('window').height * 5) / 100,
+  },
+
+  cameraView: {
+    width: Dimensions.get('window').width,
+    height: (Dimensions.get('window').height * 80) / 100,
   },
 });
