@@ -9,7 +9,7 @@ export default function App() {
   const [accessToken, setAccessToken] = React.useState<string>();
 
   if (accessToken) {
-    return <Scanning accessToken={accessToken} />;
+    return <Scanning accessToken={accessToken} setAccessToken={setAccessToken} />;
   } else {
     return <Login setAccessToken={setAccessToken} />;
   }

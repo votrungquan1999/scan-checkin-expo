@@ -19,7 +19,7 @@ export default async function checkIn(
   const location = await getCurrentLocation();
 
   const resp = await axios.post(
-    ` https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate?key=${API_KEY}`,
     {
       requests: [
         {
