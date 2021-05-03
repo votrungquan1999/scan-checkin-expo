@@ -25,14 +25,13 @@ function getSheetInfo(sheetData: GetSheetData, name: string) {
 }
 
 export default async function processScannedValue(accessToken: string, barcode: string) {
+  alert(`Scanned barcode: ${barcode}. Checking User Existence`);
   const sheetData = await getSheetData(accessToken);
 
   if (!sheetData) {
     alert('get google sheet data error');
     return;
   }
-
-  // const sheetID = getSheetID(sheetData, 'check-in');
 
   const sheetInfo = getSheetInfo(sheetData, 'check-in');
   if (!sheetInfo) {
@@ -56,6 +55,7 @@ export default async function processScannedValue(accessToken: string, barcode: 
 
   // await setSheetProperties(sheetInfo, accessToken);
 
+  alert('Submitting Attendence');
   const respStatus = await checkIn(accessToken, barcode, sheetInfo, existedUser);
 
   if (respStatus === 200) {

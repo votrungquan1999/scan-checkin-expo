@@ -21,7 +21,7 @@ export default function Scanning({ accessToken, setAccessToken }: ScanningProps)
 
   const handleBarCodeScanned = ({ type, data }: any) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned! Please wait for processing!`);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned! Please wait for processing!`);
 
     processScannedValue(accessToken, data);
   };
